@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For Rishita — from Ayush ❤️</title>
+  <meta name="description" content="A little website Ayush made for Rishita with love: apology letter, 100 reasons, and a mini puzzle game." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1020; /* deep night */
+      --card:#14162b;
+      --muted:#9aa4b2;
+      --accent:#ff6aa6;
+      --accent-2:#7de2ff;
+      --gold:#ffd166;
+      --white:#f8fbff;
+      --heart:#ff4d6d;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(1200px 800px at 20% 10%, #1a1d38 0%, var(--bg) 50%), var(--bg);color:var(--white);font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;scroll-behavior:smooth}
+    a{color:var(--accent)}
+    img{max-width:100%;display:block}
+    .container{width:min(1100px,92%);margin-inline:auto}
+    header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg, rgba(10,10,22,.9), rgba(10,10,22,.65));backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:10px 6px}
+    nav .brand{font-weight:700;letter-spacing:.5px}
+    nav .links{display:flex;gap:18px}
+    nav .links a{text-decoration:none;color:var(--white);opacity:.85}
+    nav .links a:hover{opacity:1}
+
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:56px 0 24px}
+    .hero-card{background:linear-gradient(145deg, #151737, #0e1026);border:1px solid rgba(255,255,255,.06);border-radius:24px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+    .hero img{width:100%;height:520px;object-fit:cover}
+    .hero .text h1{font-size:38px;margin:0 0 10px}
+    .hero .text p{color:var(--muted);margin:10px 0 18px}
+    .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{appearance:none;border:none;border-radius:14px;padding:12px 16px;font-weight:600;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#ff9b9b);color:#180a16}
+    .btn-ghost{background:#1a1c36;border:1px solid rgba(255,255,255,.10);color:var(--white)}
+
+    /* Floating hearts */
+    .hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .heart{position:absolute;width:14px;height:14px;background:var(--heart);transform:rotate(45deg);animation:float 8s linear infinite;opacity:.7}
+    .heart:before,.heart:after{content:"";position:absolute;width:14px;height:14px;background:var(--heart);border-radius:50%}
+    .heart:before{left:-7px}
+    .heart:after{top:-7px}
+    @keyframes float{0%{transform:translateY(0) rotate(45deg);opacity:.0}10%{opacity:.7}100%{transform:translateY(-120vh) rotate(45deg);opacity:0}}
+
+    section{padding:58px 0}
+    .card{background:linear-gradient(160deg,#14162f, #0c0f24);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+
+    /* Typewriter letter */
+    .typewriter{white-space:pre-wrap;line-height:1.8;color:#f3f6ff;font-size:16px}
+    .cursor{display:inline-block;width:2px;background:var(--gold);margin-left:2px;animation:blink 1s steps(1) infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    /* Reasons grid */
+    .reasons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px}
+    .reason{background:linear-gradient(145deg,#1a1d3d,#12142b);border:1px dashed rgba(255,255,255,.14);aspect-ratio:1/1;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease}
+    .reason:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(0,0,0,.35)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(5,7,16,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+    .modal.active{display:flex}
+    .modal .modal-card{width:min(680px,96%);background:linear-gradient(160deg,#141734,#0c0f24);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px}
+    .modal h3{margin:0 0 8px}
+
+    /* Puzzle */
+    .puzzle-wrap{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+    .board{width:480px;max-width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative;background:#0e1129}
+    .tile{position:absolute;user-select:none;transition:transform .15s}
+    .puzzle-controls{display:flex;gap:10px;flex-wrap:wrap}
+    .success{display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:rgba(125,226,255,.1);border:1px solid rgba(125,226,255,.3)}
+    .success.show{display:block}
+
+    footer{padding:40px 0;color:var(--muted);text-align:center}
+
+    /* Responsive */
+    @media (max-width:960px){
+      .hero{grid-template-columns:1fr;gap:16px}
+      .puzzle-wrap{grid-template-columns:1fr}
+      .board{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating hearts background -->
+  <div class="hearts" id="hearts"></div>
+
+  <header>
+    <nav class="container">
+      <div class="brand">Ayush ❤ Rishita</div>
+      <div class="links">
+        <a href="#letter">Letter</a>
+        <a href="#reasons">100 Reasons</a>
+        <a href="#puzzle">Puzzle</a>
+        <a href="#music">Music</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="container hero">
+    <div class="hero-card"><img id="heroImg" src="./rishita.jpg" alt="Rishita" /></div>
+    <div class="text">
+      <h1>Hi Rishita, this is for you 💙</h1>
+      <p>From Ayush — a little website to say I'm sorry, to remind you why you're special, and to make you smile.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#letter">Read my letter</a>
+        <a class="btn btn-ghost" href="#reasons">Open the hearts</a>
+        <a class="btn btn-ghost" href="#puzzle">Play the puzzle</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Letter -->
+  <section id="letter">
+    <div class="container card">
+      <h2>My Letter to You</h2>
+      <div id="letterBox" class="typewriter" aria-live="polite"></div><span class="cursor" id="cursor"></span>
+    </div>
+  </section>
+
+  <!-- 100 Reasons -->
+  <section id="reasons">
+    <div class="container card">
+      <h2>100 Reasons I Love You</h2>
+      <p class="muted">Click a heart to reveal a reason. (I started you off with 30!)</p>
+      <div class="reasons-grid" id="reasonsGrid"></div>
+      <details style="margin-top:14px;color:var(--muted)">
+  
+       [
+    'I love your beautiful eyes.',
+    'I love your sweet smile.',
+    'I love the way you care for me.',
+    'I love how you support my dreams.',
+    'I love your amazing laugh.',
+    'I love the way you say my name.',
+    'I love your kind heart.',
+    'I love your intelligence.',
+    'I love your confidence.',
+    'I love how you inspire me.',
+    'I love your honesty.',
+    'I love the way you comfort me.',
+    'I love your determination.',
+    'I love your creativity.',
+    'I love your style.',
+    'I love the way you surprise me.',
+    'I love how you make me better.',
+    'I love your cooking.',
+    'I love your voice.',
+    'I love your hugs.',
+    'I love your warmth.',
+    'I love how you understand me.',
+    'I love the way you motivate me.',
+    'I love your patience.',
+    'I love how you trust me.',
+    'I love your touch.',
+    'I love your caring nature.',
+    'I love the way you listen to me.',
+    'I love your sense of adventure.',
+    'I love your gentle heart.',
+    'I love the way you make me laugh.',
+    'I love your positivity.',
+    'I love your loyalty.',
+    'I love your charm.',
+    'I love how you never give up on me.',
+    'I love your cuteness.',
+    'I love your energy.',
+    'I love your strength.',
+    'I love the way you look at me.',
+    'I love the way you encourage me.',
+    'I love how you make me proud.',
+    'I love your sweetness.',
+    'I love the way you forgive me.',
+    'I love your kindness to others.',
+    'I love your passion.',
+    'I love your beautiful soul.',
+    'I love your playfulness.',
+    'I love your deep thoughts.',
+    'I love how you care about little things.',
+    'I love your gentle smile.',
+    'I love your optimism.',
+    'I love how you dream big.',
+    'I love your silly faces.',
+    'I love your caring words.',
+    'I love your curiosity.',
+    'I love your dedication.',
+    'I love your thoughtfulness.',
+    'I love your innocence.',
+    'I love how you believe in me.',
+    'I love your humor.',
+    'I love your spirit.',
+    'I love your little quirks.',
+    'I love the way you tease me.',
+    'I love your romantic side.',
+    'I love your eyes when they shine.',
+    'I love the way you hold my hand.',
+    'I love your magic in my life.',
+    'I love your love for me.',
+    'I love everything about you.',
+    'I love your soft hands.',
+    'I love your caring hugs.',
+    'I love your morning texts.',
+    'I love your late-night talks.',
+    'I love your giggles.',
+    'I love the way you look in my eyes.',
+    'I love your smell.',
+    'I love your sleepy voice.',
+    'I love your kindness to strangers.',
+    'I love your patience with me.',
+    'I love your surprise kisses.',
+    'I love your cute pout.',
+    'I love your long talks.',
+    'I love your goodnight wishes.',
+    'I love your way of solving problems.',
+    'I love your love for food.',
+    'I love your protective side.',
+    'I love your support in hard times.',
+    'I love your endless love.',
+    'I love your way of making memories.',
+    'I love your smile in the morning.',
+    'I love your care when I’m sick.',
+    'I love your silly jokes.',
+    'I love your way of saying sorry.',
+    'I love your little compliments.',
+    'I love your attention to me.',
+    'I love your way of making me feel special.',
+    'I love your warmth in winter.',
+    'I love your shine in my life.',
+    'I love your gentle care.',
+    'I love your words that heal me.',
+    'I love your world that you share with me.',
+    'I love you for being you.'
+];
+</code> 🫶</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Puzzle Game -->
+  <section id="puzzle">
+    <div class="container card">
+      <h2>Our Little Puzzle</h2>
+      <p class="muted">Solve the 3×3 sliding puzzle made from your photo. When you finish, something special appears ✨</p>
+
+      <div class="puzzle-wrap">
+        <div class="board" id="board" aria-label="Sliding puzzle board"></div>
+        <div>
+          <div class="puzzle-controls">
+            <button class="btn btn-primary" id="shuffleBtn">Shuffle</button>
+            <button class="btn btn-ghost" id="showHint">Hint</button>
+            <button class="btn btn-ghost" id="changeImg">Use hero image</button>
+          </div>
+          <div class="success" id="successMsg">🎉 You did it! <strong>Rishita</strong>, every piece of my life fits better with you. <em>I love you forever.</em></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Music -->
+  <section id="music">
+    <div class="container card">
+      <h2>Our Song</h2>
+      <p class="muted">Browsers block autoplay, so tap play when you're ready.</p>
+      <audio id="bgm" src="music.mp3" preload="auto" controls></audio>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">Made with ❤️ by Ayush for Rishita • <span style="color:var(--accent-2)">Forever & Always</span></div>
+  </footer>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none"></canvas>
+
+  <!-- Modal for reasons -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <h3 id="modalTitle">Reason</h3>
+      <p id="modalText"></p>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <button class="btn btn-primary" id="closeModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ========= Setup data ========= */
+    const N = 3; // puzzle grid size
+
+    // 👉 Replace this with the path to your chosen image (placed next to the HTML file)
+    const IMAGE_URL = './rishita.jpg';
+
+    // Your apology letter (auto-typed)
+    const letter = `Rishita,
+
+I know I hurt you, and I will never try to justify what I said. I reacted in anger and let my emotions speak instead of my heart. But the truth is, you mean more to me than my pride, my ego, or any fight we could ever have. You are the person who understands me when no one else does, who supports me even from miles away, and who makes my life brighter just by being in it. I don’t want to lose the warmth of your voice, the comfort of your presence, or the love we’ve built together. I’m ready to work on myself, to control my words, and to give you the respect and care you truly deserve. You’re not just someone I love—you’re my safe place, my happiness, and my forever. Please don’t let one mistake erase the beauty of our journey.
+
+— Ayush`;
+
+    // Start with 30; you can extend to 100 easily
+    const reasons = [
+      'Your smile makes any day feel lighter.',
+      'You listen — really listen — to me.',
+      'You push me to become better without judging me.',
+      'Even from miles away, you make me feel at home.',
+      'You are strong and soft at the same time.',
+      'You remember the little things I forget.',
+      'You laugh at my bad jokes (sometimes 🤭).',
+      'You’re my favorite notification.',
+      'You make ordinary moments feel special.',
+      'You believe in us.',
+      'You look stunning in traditional and casual — everything.',
+      'You forgive but never forget to teach me.',
+      'You text me first when I need it most.',
+      'Your voice is my safe place.',
+      'You care about family and values.',
+      'You’re patient with my flaws.',
+      'You remind me what love really means.',
+      'You make distance feel smaller.',
+      'You’re honest, even when it’s hard.',
+      'You celebrate my wins, tiny or big.',
+      'You are kind to people and animals.',
+      'You challenge me when I’m wrong.',
+      'You make me excited about the future.',
+      'Your eyes tell stories.',
+      'You are my best friend first.',
+      'You make festivals and Sundays feel special.',
+      'You give the best advice.',
+      'You make me want to say sorry and grow.',
+      'You love me even when I’m difficult.',
+      'You’re you — and that’s everything.'
+    ];
+
+    /* ========= Floating hearts ========= */
+    const hearts = document.getElementById('hearts');
+    function makeHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const size = 8 + Math.random()*16;
+      h.style.width = h.style.height = size + 'px';
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.bottom = '-20px';
+      h.style.animationDuration = (6 + Math.random()*5) + 's';
+      h.style.opacity = .4 + Math.random()*.5;
+      hearts.appendChild(h);
+      setTimeout(()=>h.remove(), 12000);
+    }
+    setInterval(makeHeart, 500);
+
+    /* ========= Typewriter ========= */
+    const letterBox = document.getElementById('letterBox');
+    const cursor = document.getElementById('cursor');
+    let i=0;
+    function type(){
+      if(i < letter.length){
+        letterBox.textContent += letter.charAt(i);
+        i++;
+        setTimeout(type, 18);
+      } else {
+        cursor.style.display='none';
+      }
+    }
+    // Start typing once page settles
+    window.addEventListener('load', ()=> setTimeout(type, 600));
+
+    /* ========= Reasons grid + modal ========= */
+    const grid = document.getElementById('reasonsGrid');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+    const closeModal = document.getElementById('closeModal');
+
+    function renderReasons(){
+      grid.innerHTML = '';
+      const total = Math.max(100, reasons.length); // always render 100 hearts
+      for(let idx=0; idx<total; idx++){
+        const d = document.createElement('button');
+        d.className = 'reason';
+        d.setAttribute('aria-label', 'Open reason ' + (idx+1));
+        d.innerHTML = '❤';
+        d.addEventListener('click', ()=>{
+          const r = reasons[idx] || `Reason #${idx+1} — add yours here in the code!`;
+          modalTitle.textContent = `Reason ${idx+1}`;
+          modalText.textContent = r;
+          modal.classList.add('active');
+        });
+        grid.appendChild(d);
+      }
+    }
+    renderReasons();
+    closeModal.onclick = ()=> modal.classList.remove('active');
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.classList.remove('active'); });
+
+    /* ========= Sliding Puzzle ========= */
+    const board = document.getElementById('board');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const showHintBtn = document.getElementById('showHint');
+    const changeImgBtn = document.getElementById('changeImg');
+    const successMsg = document.getElementById('successMsg');
+
+    let tiles = []; // positions 0..N*N-1, last is empty
+    let imgUrl = IMAGE_URL;
+
+    function initTiles(){
+      board.innerHTML = '';
+      tiles = [];
+      const size = board.clientWidth;
+      const tileSize = size / N;
+      for(let y=0; y<N; y++){
+        for(let x=0; x<N; x++){
+          const i = y*N + x;
+          tiles[i] = i; // solved order
+          if(i === N*N-1) continue; // skip last (empty)
+          const t = document.createElement('div');
+          t.className = 'tile';
+          t.style.width = t.style.height = tileSize + 'px';
+          t.style.left = x*tileSize + 'px';
+          t.style.top = y*tileSize + 'px';
+          t.style.backgroundImage = `url('${imgUrl}')`;
+          t.style.backgroundSize = size + 'px ' + size + 'px';
+          t.style.backgroundPosition = (-x*tileSize) + 'px ' + (-y*tileSize) + 'px';
+          t.dataset.index = i;
+          t.addEventListener('click', ()=> moveTile(parseInt(t.dataset.index)) );
+          board.appendChild(t);
+        }
+      }
+      successMsg.classList.remove('show');
+    }
+
+    function coords(pos){ return {x: pos % N, y: Math.floor(pos / N)} }
+
+    function moveTile(index){
+      const empty = tiles.indexOf(N*N-1);
+      const iPos = tiles.indexOf(index);
+      const e = coords(empty), t = coords(iPos);
+      const isAdj = (Math.abs(e.x - t.x) + Math.abs(e.y - t.y)) === 1;
+      if(!isAdj) return;
+      // swap tile with empty
+      tiles[iPos] = N*N-1; tiles[empty] = index;
+      renderBoard();
+      checkSolved();
+    }
+
+    function renderBoard(){
+      const size = board.clientWidth;
+      const tileSize = size / N;
+      const divs = [...board.children];
+      divs.forEach(d=>{
+        const idx = parseInt(d.dataset.index);
+        const pos = tiles.indexOf(idx);
+        const {x,y} = coords(pos);
+        d.style.transform = `translate(${x*tileSize - parseFloat(d.style.left)}px, ${y*tileSize - parseFloat(d.style.top)}px)`;
+      });
+    }
+
+    function shuffle(){
+      // generate a solvable shuffle by performing random valid moves
+      let moves = 200 + Math.floor(Math.random()*200);
+      while(moves--){
+        const empty = tiles.indexOf(N*N-1);
+        const {x,y} = coords(empty);
+        const options = [];
+        if(x>0) options.push(empty-1);
+        if(x<N-1) options.push(empty+1);
+        if(y>0) options.push(empty-N);
+        if(y<N-1) options.push(empty+N);
+        const choice = options[Math.floor(Math.random()*options.length)];
+        // swap value at empty with value at choice
+        [tiles[empty], tiles[choice]] = [tiles[choice], tiles[empty]];
+      }
+      renderBoard();
+      successMsg.classList.remove('show');
+    }
+
+    function checkSolved(){
+      const solved = tiles.every((v,i)=> v===i);
+      if(solved){
+        successMsg.classList.add('show');
+        launchConfetti();
+      }
+    }
+
+    window.addEventListener('resize', ()=>{ initTiles(); renderBoard(); });
+    shuffleBtn.addEventListener('click', shuffle);
+    showHintBtn.addEventListener('click', ()=>{
+      alert('Hint: Slide the pieces to form the full picture of Rishita from the hero section!');
+    });
+    changeImgBtn.addEventListener('click', ()=>{
+      imgUrl = document.getElementById('heroImg').src || IMAGE_URL;
+      initTiles();
+    });
+
+    // initialize board once image is likely cached
+    window.addEventListener('load', ()=>{ initTiles(); renderBoard(); });
+
+    /* ========= Confetti ========= */
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = [];
+    function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+    function launchConfetti(){
+      confettiPieces = Array.from({length: 200}, ()=>({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*200,
+        r: 2 + Math.random()*4,
+        vx: -1 + Math.random()*2,
+        vy: 2 + Math.random()*3,
+        a: Math.random()*Math.PI*2
+      }));
+      animateConfetti();
+      setTimeout(()=> confettiPieces = [], 3500);
+    }
+
+    function animateConfetti(){
+      if(!confettiPieces.length) return;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confettiPieces.forEach(p=>{
+        p.x += p.vx; p.y += p.vy; p.a += 0.05;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.a);
+        ctx.fillStyle = ['#ff6aa6','#7de2ff','#ffd166','#b089f0'][p.r|0 % 4];
+        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+        ctx.restore();
+      });
+      requestAnimationFrame(animateConfetti);
+    }
+    
+  </script>
+</body>
+</html>
